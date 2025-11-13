@@ -4,7 +4,11 @@ import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import cors from "@fastify/cors";
 import { PrismaClient } from "../generated/prisma/client.js";
-import type { FeedbackListResponse } from "@full-stack-starter/shared";
+import type {
+  FeedbackListResponse,
+  CreateFeedbackRequest,
+  FeedbackEntry,
+} from "@full-stack-starter/shared";
 
 const PORT = Number(process.env.PORT) || 8080;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -51,6 +55,28 @@ server.get("/api/feedback", async (): Promise<FeedbackListResponse> => {
   });
   return { data };
 });
+
+server.post<{ Body: CreateFeedbackRequest }>(
+  "/api/feedback",
+  async (request): Promise<FeedbackEntry> => {
+    const { name, rating, comment } = request.body;
+
+    // Validate rating is between 1 and 5
+    if (rating < 1 || rating > 5) {
+      throw new Error("Rating must be between 1 and 5");
+    }
+
+    const feedback = await prisma.feedbackEntry.create({
+      data: {
+        name,
+        rating,
+        comment,
+      },
+    });
+
+    return feedback;
+  }
+);
 
 await server.listen({ port: PORT, host: "0.0.0.0" });
 
