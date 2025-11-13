@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+generated
+.turbo
+*.gen.ts
+routeTree.gen.ts
+package-lock.json
+*.sqlite
+*.db
+coverage

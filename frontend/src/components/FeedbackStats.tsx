@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Card,
   Group,
@@ -8,11 +8,16 @@ import {
   Center,
   Alert,
   SimpleGrid,
-} from '@mantine/core';
-import { IconAlertCircle, IconStar, IconCalendar, IconMessage } from '@tabler/icons-react';
-import type { FeedbackStatsResponse } from '@full-stack-starter/shared';
+} from "@mantine/core";
+import {
+  IconAlertCircle,
+  IconStar,
+  IconCalendar,
+  IconMessage,
+} from "@tabler/icons-react";
+import type { FeedbackStatsResponse } from "@full-stack-starter/shared";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export function FeedbackStats() {
   const [stats, setStats] = useState<FeedbackStatsResponse | null>(null);
@@ -35,7 +40,7 @@ export function FeedbackStats() {
       const data: FeedbackStatsResponse = await response.json();
       setStats(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -70,7 +75,10 @@ export function FeedbackStats() {
     <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Group gap="sm">
-          <IconStar size={24} style={{ color: 'var(--mantine-color-yellow-6)' }} />
+          <IconStar
+            size={24}
+            style={{ color: "var(--mantine-color-yellow-6)" }}
+          />
           <Stack gap={0}>
             <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
               Average Rating
@@ -84,7 +92,10 @@ export function FeedbackStats() {
 
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Group gap="sm">
-          <IconCalendar size={24} style={{ color: 'var(--mantine-color-blue-6)' }} />
+          <IconCalendar
+            size={24}
+            style={{ color: "var(--mantine-color-blue-6)" }}
+          />
           <Stack gap={0}>
             <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
               This Week
@@ -98,7 +109,10 @@ export function FeedbackStats() {
 
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Group gap="sm">
-          <IconMessage size={24} style={{ color: 'var(--mantine-color-green-6)' }} />
+          <IconMessage
+            size={24}
+            style={{ color: "var(--mantine-color-green-6)" }}
+          />
           <Stack gap={0}>
             <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
               Total Feedback

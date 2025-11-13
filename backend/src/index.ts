@@ -116,7 +116,7 @@ server.get("/api/feedback/stats", async (): Promise<FeedbackStatsResponse> => {
 
 await server.listen({ port: PORT, host: "0.0.0.0" });
 
-const signals: NodeJS.Signals[] = ["SIGINT", "SIGTERM"];
+const signals = ["SIGINT", "SIGTERM"] as const;
 signals.forEach((signal) => {
   process.on(signal, async () => {
     server.log.info(`Received ${signal}, closing server`);

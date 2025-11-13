@@ -1,11 +1,4 @@
-import {
-  Group,
-  Text,
-  Chip,
-  Flex,
-  Select,
-  Stack,
-} from "@mantine/core";
+import { Group, Text, Chip, Flex, Select, Stack } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 
 type SortOption = "newest" | "oldest" | "highest" | "lowest";

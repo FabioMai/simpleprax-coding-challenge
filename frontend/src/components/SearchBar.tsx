@@ -1,5 +1,5 @@
-import { TextInput } from '@mantine/core';
-import { IconSearch } from '@tabler/icons-react';
+import { TextInput } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 
 interface SearchBarProps {
   value: string;
@@ -7,7 +7,11 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export function SearchBar({ value, onChange, placeholder = 'Search...' }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onChange,
+  placeholder = "Search...",
+}: SearchBarProps) {
   return (
     <TextInput
       placeholder={placeholder}

@@ -48,12 +48,14 @@ npm run build --workspace=shared
 ### Run Development Servers
 
 **Backend:**
+
 ```bash
 cd backend
 npm run dev
 ```
 
 **Frontend:**
+
 ```bash
 cd frontend
 npm run dev
@@ -61,14 +63,44 @@ npm run dev
 
 The frontend will be available at http://localhost:5173 and the backend at http://localhost:8080.
 
+## Code Quality
+
+### Linting
+
+```bash
+# Check for linting errors
+npm run lint
+
+# Auto-fix linting errors
+npm run lint:fix
+```
+
+### Formatting
+
+```bash
+# Check code formatting
+npm run format:check
+
+# Format all files
+npm run format
+```
+
+The project uses ESLint with TypeScript support and Prettier for code formatting. Configuration files:
+
+- `eslint.config.mjs` - ESLint configuration with separate rules for Node.js (backend) and browser (frontend)
+- `.prettierrc` - Prettier formatting rules
+- `.prettierignore` - Files to exclude from formatting
+
 ## Features
 
 ### Backend API
+
 - `GET /api/feedback` - List all feedback entries with timestamps
 - `POST /api/feedback` - Create new feedback entry
 - `GET /api/feedback/stats` - Get statistics (average rating, total count, weekly count)
 
 ### Frontend Features
+
 - View all patient feedback entries
 - Add new feedback with validation
 - Real-time search across name, comment, and rating
