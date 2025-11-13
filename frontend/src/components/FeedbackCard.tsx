@@ -1,5 +1,5 @@
-import { Card, Group, Text, Rating } from '@mantine/core';
-import type { FeedbackEntry } from '@full-stack-starter/shared';
+import { Card, Group, Text, Rating } from "@mantine/core";
+import type { FeedbackEntry } from "@full-stack-starter/shared";
 
 interface FeedbackCardProps {
   entry: FeedbackEntry;
@@ -12,7 +12,7 @@ export function FeedbackCard({ entry }: FeedbackCardProps) {
         <Text fw={700} size="lg">
           {entry.name}
         </Text>
-        <Rating value={entry.rating} readOnly />
+        <Rating value={entry.rating} readOnly color="primary" />
       </Group>
       <Text size="sm" c="dimmed">
         {entry.comment}

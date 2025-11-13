@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useForm } from '@mantine/form';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useForm } from "@mantine/form";
 import {
   Title,
   TextInput,
@@ -10,12 +10,12 @@ import {
   Alert,
   Rating,
   Text,
-} from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
-import { useState } from 'react';
-import type { CreateFeedbackRequest } from '@full-stack-starter/shared';
+} from "@mantine/core";
+import { IconAlertCircle } from "@tabler/icons-react";
+import { useState } from "react";
+import type { CreateFeedbackRequest } from "@full-stack-starter/shared";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 function NewFeedback() {
   const navigate = useNavigate();
@@ -24,23 +24,23 @@ function NewFeedback() {
 
   const form = useForm<CreateFeedbackRequest>({
     initialValues: {
-      name: '',
+      name: "",
       rating: 0,
-      comment: '',
+      comment: "",
     },
     validate: {
       name: (value) => {
-        if (!value) return 'Name is required';
-        if (value.length < 2) return 'Name must be at least 2 characters';
+        if (!value) return "Name is required";
+        if (value.length < 2) return "Name must be at least 2 characters";
         return null;
       },
       rating: (value) => {
-        if (!value || value < 1) return 'Please select a rating';
+        if (!value || value < 1) return "Please select a rating";
         return null;
       },
       comment: (value) => {
-        if (!value) return 'Comment is required';
-        if (value.length < 10) return 'Comment must be at least 10 characters';
+        if (!value) return "Comment is required";
+        if (value.length < 10) return "Comment must be at least 10 characters";
         return null;
       },
     },
@@ -52,9 +52,9 @@ function NewFeedback() {
       setError(null);
 
       const response = await fetch(`${API_BASE_URL}/api/feedback`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
       });
@@ -64,9 +64,9 @@ function NewFeedback() {
       }
 
       // Navigate back to the list after successful submission
-      navigate({ to: '/' });
+      navigate({ to: "/" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       setIsSubmitting(false);
     }
   };
@@ -93,17 +93,18 @@ function NewFeedback() {
             placeholder="Enter patient name"
             required
             disabled={isSubmitting}
-            {...form.getInputProps('name')}
+            {...form.getInputProps("name")}
           />
 
           <div>
             <Text size="sm" fw={500} mb="xs">
-              Rating <span style={{ color: 'red' }}>*</span>
+              Rating <span style={{ color: "red" }}>*</span>
             </Text>
             <Rating
               size="lg"
-              {...form.getInputProps('rating')}
-              onChange={(value) => form.setFieldValue('rating', value)}
+              color="primary"
+              {...form.getInputProps("rating")}
+              onChange={(value) => form.setFieldValue("rating", value)}
             />
             {form.errors.rating && (
               <Text c="red" size="sm" mt={5}>
@@ -118,16 +119,17 @@ function NewFeedback() {
             required
             minRows={5}
             disabled={isSubmitting}
-            {...form.getInputProps('comment')}
+            {...form.getInputProps("comment")}
           />
 
           <Group mt="md">
-            <Button type="submit" loading={isSubmitting}>
+            <Button type="submit" loading={isSubmitting} color="primary">
               Submit Feedback
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate({ to: '/' })}
+              color="primary"
+              onClick={() => navigate({ to: "/" })}
               disabled={isSubmitting}
             >
               Cancel
@@ -139,6 +141,6 @@ function NewFeedback() {
   );
 }
 
-export const Route = createFileRoute('/new')({
+export const Route = createFileRoute("/new")({
   component: NewFeedback,
 });

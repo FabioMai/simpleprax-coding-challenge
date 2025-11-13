@@ -13,7 +13,7 @@ export const Route = createRootRoute({
               <Anchor
                 component="span"
                 fw={700}
-                c={isActive ? 'blue' : 'dimmed'}
+                c={isActive ? 'primary' : 'dimmed'}
                 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
                 <IconStar size={20} />
@@ -26,7 +26,7 @@ export const Route = createRootRoute({
               <Anchor
                 component="span"
                 fw={700}
-                c={isActive ? 'blue' : 'dimmed'}
+                c={isActive ? 'primary' : 'dimmed'}
                 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
                 <IconPlus size={20} />
