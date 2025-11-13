@@ -6,10 +6,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Clear existing data
   await prisma.feedbackEntry.deleteMany();
 
-  // Create 6 example patient reviews for a doctor's office
   const reviews = await prisma.feedbackEntry.createMany({
     data: [
       {

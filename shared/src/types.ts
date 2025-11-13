@@ -1,10 +1,9 @@
-// API Response Types
 export interface FeedbackEntry {
   id: number;
   name: string;
   rating: number;
   comment: string;
-  createdAt?: string;
+  createdAt: string;
 }
 
 export interface FeedbackListResponse {
@@ -17,7 +16,6 @@ export interface FeedbackStatsResponse {
   totalFeedback: number;
 }
 
-// API Request Types
 export interface CreateFeedbackRequest {
   name: string;
   rating: number;

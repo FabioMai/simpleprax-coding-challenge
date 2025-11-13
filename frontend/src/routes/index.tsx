@@ -58,17 +58,14 @@ function FeedbackList() {
     }
   };
 
-  // Filter and sort feedback
   const filteredAndSortedFeedback = feedback
     .filter((entry) => {
-      // Search filter
       const query = searchQuery.toLowerCase();
       const matchesSearch =
         entry.name.toLowerCase().includes(query) ||
         entry.comment.toLowerCase().includes(query) ||
         entry.rating.toString().includes(query);
 
-      // Star filter
       const matchesStars =
         starFilter.length === 0 || starFilter.includes(entry.rating);
 
@@ -77,19 +74,18 @@ function FeedbackList() {
     .sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return b.id - a.id; // Higher ID = newer
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         case "oldest":
-          return a.id - b.id; // Lower ID = older
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         case "highest":
-          return b.rating - a.rating; // Higher rating first
+          return b.rating - a.rating;
         case "lowest":
-          return a.rating - b.rating; // Lower rating first
+          return a.rating - b.rating;
         default:
           return 0;
       }
     });
 
-  // Calculate pagination
   const totalPages = Math.ceil(
     filteredAndSortedFeedback.length / ITEMS_PER_PAGE
   );
@@ -100,7 +96,6 @@ function FeedbackList() {
     endIndex
   );
 
-  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, starFilter, sortBy]);

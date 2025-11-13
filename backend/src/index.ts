@@ -49,11 +49,17 @@ await server.register(fastifySwaggerUi, {
 });
 
 server.get("/api/feedback", async (): Promise<FeedbackListResponse> => {
-  const data = await prisma.feedbackEntry.findMany({
+  const entries = await prisma.feedbackEntry.findMany({
     orderBy: {
       id: "asc",
     },
   });
+
+  const data = entries.map((entry) => ({
+    ...entry,
+    createdAt: entry.createdAt.toISOString(),
+  }));
+
   return { data };
 });
 
@@ -62,7 +68,6 @@ server.post<{ Body: CreateFeedbackRequest }>(
   async (request): Promise<FeedbackEntry> => {
     const { name, rating, comment } = request.body;
 
-    // Validate rating is between 1 and 5
     if (rating < 1 || rating > 5) {
       throw new Error("Rating must be between 1 and 5");
     }
@@ -75,7 +80,10 @@ server.post<{ Body: CreateFeedbackRequest }>(
       },
     });
 
-    return feedback;
+    return {
+      ...feedback,
+      createdAt: feedback.createdAt.toISOString(),
+    };
   }
 );
 
