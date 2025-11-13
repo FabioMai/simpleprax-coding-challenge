@@ -1,13 +1,12 @@
 // API Response Types
 
-export interface HelloResponse {
-  message: string;
+export interface FeedbackEntry {
+  id: number;
+  name: string;
+  rating: number;
+  comment: string;
 }
 
-// Add more shared types here as your API grows
-// Example:
-// export interface User {
-//   id: string;
-//   name: string;
-//   email: string;
-// }
+export interface FeedbackListResponse {
+  data: FeedbackEntry[];
+}

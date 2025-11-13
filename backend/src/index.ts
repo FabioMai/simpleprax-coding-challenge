@@ -1,13 +1,16 @@
+import "dotenv/config";
 import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import cors from "@fastify/cors";
-import type { HelloResponse } from "@full-stack-starter/shared";
+import { PrismaClient } from "../generated/prisma/client.js";
+import type { FeedbackListResponse } from "@full-stack-starter/shared";
 
 const PORT = Number(process.env.PORT) || 8080;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const server = Fastify({ logger: true });
+const prisma = new PrismaClient();
 
 await server.register(cors, {
   origin: FRONTEND_URL,
@@ -40,18 +43,22 @@ await server.register(fastifySwaggerUi, {
   staticCSP: true,
 });
 
-server.get("/api/hello", async (): Promise<HelloResponse> => {
-  return { message: "Hello from backend!" };
+server.get("/api/feedback", async (): Promise<FeedbackListResponse> => {
+  const data = await prisma.feedbackEntry.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
+  return { data };
 });
 
-// Start server
 await server.listen({ port: PORT, host: "0.0.0.0" });
 
-// Graceful shutdown
 const signals: NodeJS.Signals[] = ["SIGINT", "SIGTERM"];
 signals.forEach((signal) => {
   process.on(signal, async () => {
-    server.log.info(`Received ${signal}, closing server gracefully`);
+    server.log.info(`Received ${signal}, closing server`);
+    await prisma.$disconnect();
     await server.close();
     process.exit(0);
   });
