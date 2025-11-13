@@ -15,6 +15,7 @@ import {
   SegmentedControl,
   Chip,
   Flex,
+  Pagination,
 } from '@mantine/core';
 import { IconAlertCircle, IconSearch, IconStar } from '@tabler/icons-react';
 import type {
@@ -25,6 +26,8 @@ import { FeedbackStats } from '../components/FeedbackStats';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+const ITEMS_PER_PAGE = 5;
+
 function FeedbackList() {
   const [feedback, setFeedback] = useState<FeedbackEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +35,7 @@ function FeedbackList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [starFilter, setStarFilter] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<'recent' | 'rating'>('recent');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchFeedback();
@@ -79,6 +83,17 @@ function FeedbackList() {
         return b.id - a.id;
       }
     });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredAndSortedFeedback.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedFeedback = filteredAndSortedFeedback.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, starFilter, sortBy]);
 
   if (loading) {
     return (
@@ -164,21 +179,35 @@ function FeedbackList() {
           No feedback matches your filters.
         </Text>
       ) : (
-        <Stack gap="md">
-          {filteredAndSortedFeedback.map((entry) => (
-            <Card key={entry.id} shadow="sm" padding="lg" radius="md" withBorder>
-              <Group justify="space-between" mb="md">
-                <Text fw={700} size="lg">
-                  {entry.name}
+        <>
+          <Stack gap="md">
+            {paginatedFeedback.map((entry) => (
+              <Card key={entry.id} shadow="sm" padding="lg" radius="md" withBorder>
+                <Group justify="space-between" mb="md">
+                  <Text fw={700} size="lg">
+                    {entry.name}
+                  </Text>
+                  <Rating value={entry.rating} readOnly />
+                </Group>
+                <Text size="sm" c="dimmed">
+                  {entry.comment}
                 </Text>
-                <Rating value={entry.rating} readOnly />
-              </Group>
-              <Text size="sm" c="dimmed">
-                {entry.comment}
-              </Text>
-            </Card>
-          ))}
-        </Stack>
+              </Card>
+            ))}
+          </Stack>
+
+          {totalPages > 1 && (
+            <Group justify="center" mt="xl">
+              <Pagination
+                value={currentPage}
+                onChange={setCurrentPage}
+                total={totalPages}
+                size="md"
+                withEdges
+              />
+            </Group>
+          )}
+        </>
       )}
     </Stack>
   );
