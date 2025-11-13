@@ -3,26 +3,23 @@ import { useState, useEffect } from 'react';
 import {
   Title,
   Text,
-  Card,
   Group,
   Stack,
-  Rating,
   Loader,
   Center,
   Alert,
   Badge,
-  TextInput,
-  SegmentedControl,
-  Chip,
-  Flex,
   Pagination,
 } from '@mantine/core';
-import { IconAlertCircle, IconSearch, IconStar } from '@tabler/icons-react';
+import { IconAlertCircle } from '@tabler/icons-react';
 import type {
   FeedbackEntry,
   FeedbackListResponse,
 } from '@full-stack-starter/shared';
 import { FeedbackStats } from '../components/FeedbackStats';
+import { SearchBar } from '../components/SearchBar';
+import { FilterControls } from '../components/FilterControls';
+import { FeedbackCard } from '../components/FeedbackCard';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
@@ -129,46 +126,18 @@ function FeedbackList() {
 
       <FeedbackStats />
 
-      <TextInput
-        placeholder="Search by name, comment, or rating..."
-        leftSection={<IconSearch size={16} />}
+      <SearchBar
         value={searchQuery}
-        onChange={(event) => setSearchQuery(event.currentTarget.value)}
-        size="md"
+        onChange={setSearchQuery}
+        placeholder="Search by name, comment, or rating..."
       />
 
-      <Stack gap="md">
-        <Group justify="space-between" align="flex-start">
-          <div>
-            <Text size="sm" fw={500} mb="xs">
-              Filter by rating
-            </Text>
-            <Chip.Group multiple value={starFilter.map(String)} onChange={(value) => setStarFilter(value.map(Number))}>
-              <Flex gap="xs" wrap="wrap">
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <Chip key={star} value={String(star)} icon={<IconStar size={12} />}>
-                    {star} star{star !== 1 ? 's' : ''}
-                  </Chip>
-                ))}
-              </Flex>
-            </Chip.Group>
-          </div>
-
-          <div>
-            <Text size="sm" fw={500} mb="xs">
-              Sort by
-            </Text>
-            <SegmentedControl
-              value={sortBy}
-              onChange={(value) => setSortBy(value as 'recent' | 'rating')}
-              data={[
-                { label: 'Most Recent', value: 'recent' },
-                { label: 'Highest Rating', value: 'rating' },
-              ]}
-            />
-          </div>
-        </Group>
-      </Stack>
+      <FilterControls
+        starFilter={starFilter}
+        onStarFilterChange={setStarFilter}
+        sortBy={sortBy}
+        onSortByChange={setSortBy}
+      />
 
       {feedback.length === 0 ? (
         <Text c="dimmed" ta="center" mt="xl">
@@ -182,17 +151,7 @@ function FeedbackList() {
         <>
           <Stack gap="md">
             {paginatedFeedback.map((entry) => (
-              <Card key={entry.id} shadow="sm" padding="lg" radius="md" withBorder>
-                <Group justify="space-between" mb="md">
-                  <Text fw={700} size="lg">
-                    {entry.name}
-                  </Text>
-                  <Rating value={entry.rating} readOnly />
-                </Group>
-                <Text size="sm" c="dimmed">
-                  {entry.comment}
-                </Text>
-              </Card>
+              <FeedbackCard key={entry.id} entry={entry} />
             ))}
           </Stack>
 
