@@ -2,6 +2,10 @@
 
 A full-stack TypeScript application for managing patient feedback with shared types between frontend and backend.
 
+
+https://github.com/user-attachments/assets/c20dd3fe-2c06-40bb-be31-6647cbca8a65
+
+
 ## Stack
 
 - **Frontend**: React + Vite + TypeScript + TanStack Router + Mantine UI
