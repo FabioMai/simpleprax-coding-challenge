@@ -50,3 +50,9 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# Database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
