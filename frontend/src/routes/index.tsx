@@ -11,8 +11,9 @@ import {
   Center,
   Alert,
   Badge,
+  TextInput,
 } from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconSearch } from '@tabler/icons-react';
 import type {
   FeedbackEntry,
   FeedbackListResponse,
@@ -25,6 +26,7 @@ function FeedbackList() {
   const [feedback, setFeedback] = useState<FeedbackEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchFeedback();
@@ -47,6 +49,16 @@ function FeedbackList() {
       setLoading(false);
     }
   };
+
+  // Filter feedback based on search query
+  const filteredFeedback = feedback.filter((entry) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      entry.name.toLowerCase().includes(query) ||
+      entry.comment.toLowerCase().includes(query) ||
+      entry.rating.toString().includes(query)
+    );
+  });
 
   if (loading) {
     return (
@@ -82,13 +94,25 @@ function FeedbackList() {
 
       <FeedbackStats />
 
+      <TextInput
+        placeholder="Search by name, comment, or rating..."
+        leftSection={<IconSearch size={16} />}
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.currentTarget.value)}
+        size="md"
+      />
+
       {feedback.length === 0 ? (
         <Text c="dimmed" ta="center" mt="xl">
           No feedback entries yet.
         </Text>
+      ) : filteredFeedback.length === 0 ? (
+        <Text c="dimmed" ta="center" mt="xl">
+          No feedback matches your search.
+        </Text>
       ) : (
         <Stack gap="md">
-          {feedback.map((entry) => (
+          {filteredFeedback.map((entry) => (
             <Card key={entry.id} shadow="sm" padding="lg" radius="md" withBorder>
               <Group justify="space-between" mb="md">
                 <Text fw={700} size="lg">
