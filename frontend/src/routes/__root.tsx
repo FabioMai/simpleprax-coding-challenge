@@ -1,5 +1,5 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { AppShell, Group, Anchor, Container } from '@mantine/core';
 import { IconStar, IconPlus } from '@tabler/icons-react';
 

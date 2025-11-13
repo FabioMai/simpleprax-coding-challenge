@@ -25,13 +25,15 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 const ITEMS_PER_PAGE = 5;
 
+type SortOption = "newest" | "oldest" | "highest" | "lowest";
+
 function FeedbackList() {
   const [feedback, setFeedback] = useState<FeedbackEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [starFilter, setStarFilter] = useState<number[]>([]);
-  const [sortBy, setSortBy] = useState<"recent" | "rating">("recent");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -73,11 +75,17 @@ function FeedbackList() {
       return matchesSearch && matchesStars;
     })
     .sort((a, b) => {
-      if (sortBy === "rating") {
-        return b.rating - a.rating;
-      } else {
-        // Sort by recent (assuming higher ID = more recent)
-        return b.id - a.id;
+      switch (sortBy) {
+        case "newest":
+          return b.id - a.id; // Higher ID = newer
+        case "oldest":
+          return a.id - b.id; // Lower ID = older
+        case "highest":
+          return b.rating - a.rating; // Higher rating first
+        case "lowest":
+          return a.rating - b.rating; // Lower rating first
+        default:
+          return 0;
       }
     });
 

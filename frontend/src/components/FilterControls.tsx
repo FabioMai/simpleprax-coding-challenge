@@ -3,16 +3,18 @@ import {
   Text,
   Chip,
   Flex,
-  SegmentedControl,
+  Select,
   Stack,
 } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 
+type SortOption = "newest" | "oldest" | "highest" | "lowest";
+
 interface FilterControlsProps {
   starFilter: number[];
   onStarFilterChange: (value: number[]) => void;
-  sortBy: "recent" | "rating";
-  onSortByChange: (value: "recent" | "rating") => void;
+  sortBy: SortOption;
+  onSortByChange: (value: SortOption) => void;
 }
 
 export function FilterControls({
@@ -47,18 +49,20 @@ export function FilterControls({
           </Chip.Group>
         </div>
 
-        <div>
+        <div style={{ minWidth: 200 }}>
           <Text size="sm" fw={500} mb="xs">
             Sort by
           </Text>
-          <SegmentedControl
+          <Select
             value={sortBy}
-            onChange={(value) => onSortByChange(value as "recent" | "rating")}
-            color="primary"
+            onChange={(value) => onSortByChange(value as SortOption)}
             data={[
-              { label: "Most Recent", value: "recent" },
-              { label: "Highest Rating", value: "rating" },
+              { label: "Newest First", value: "newest" },
+              { label: "Oldest First", value: "oldest" },
+              { label: "Highest Rating", value: "highest" },
+              { label: "Lowest Rating", value: "lowest" },
             ]}
+            allowDeselect={false}
           />
         </div>
       </Group>

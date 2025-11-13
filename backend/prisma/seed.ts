@@ -9,7 +9,7 @@ async function main() {
   // Clear existing data
   await prisma.feedbackEntry.deleteMany();
 
-  // Create 5 example patient reviews for a doctor's office
+  // Create 6 example patient reviews for a doctor's office
   const reviews = await prisma.feedbackEntry.createMany({
     data: [
       {
@@ -41,6 +41,12 @@ async function main() {
         rating: 5,
         comment:
           "Outstanding medical practice! From scheduling to checkout, everything ran smoothly. Dr. Smith explained my treatment plan clearly and followed up personally. This is what healthcare should be!",
+      },
+      {
+        name: "David Martinez",
+        rating: 4,
+        comment:
+          "Very professional and caring staff. The nurse was patient with all my questions, and the doctor provided excellent care. Appointment ran on time and the facility is modern and comfortable.",
       },
     ],
   });
