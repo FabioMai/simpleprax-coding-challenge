@@ -4,10 +4,13 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import cors from "@fastify/cors";
 import type { HelloResponse } from "@full-stack-starter/shared";
 
+const PORT = Number(process.env.PORT) || 8080;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
 const server = Fastify({ logger: true });
 
 await server.register(cors, {
-  origin: "http://localhost:5173",
+  origin: FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 });
 
@@ -25,10 +28,6 @@ await server.register(fastifySwagger, {
         description: "backend",
       },
     ],
-    tags: [
-      { name: "user", description: "User related end-points" },
-      { name: "code", description: "Code related end-points" },
-    ],
   },
 });
 
@@ -38,26 +37,22 @@ await server.register(fastifySwaggerUi, {
     docExpansion: "full",
     deepLinking: false,
   },
-  uiHooks: {
-    onRequest: function (request, reply, next) {
-      next();
-    },
-    preHandler: function (request, reply, next) {
-      next();
-    },
-  },
   staticCSP: true,
-  transformStaticCSP: (header) => header,
-  transformSpecification: (swaggerObject, request, reply) => {
-    return swaggerObject;
-  },
-  transformSpecificationClone: true,
 });
 
 server.get("/api/hello", async (): Promise<HelloResponse> => {
   return { message: "Hello from backend!" };
 });
 
-server.listen({ port: 8080 }, (err) => {
-  if (err) throw err;
+// Start server
+await server.listen({ port: PORT, host: "0.0.0.0" });
+
+// Graceful shutdown
+const signals: NodeJS.Signals[] = ["SIGINT", "SIGTERM"];
+signals.forEach((signal) => {
+  process.on(signal, async () => {
+    server.log.info(`Received ${signal}, closing server gracefully`);
+    await server.close();
+    process.exit(0);
+  });
 });
