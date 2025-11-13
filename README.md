@@ -39,8 +39,14 @@ cd frontend && npm install
 
 ```bash
 cd backend
-npm run prisma:migrate
-npm run prisma:seed
+
+# Copy environment file
+cp .env.example .env
+
+# Add this line to .env: DATABASE_URL="file:./prisma/dev.db"
+
+# Seed the database
+npm run seed
 ```
 
 ### Build Shared Types
