@@ -1,7 +1,19 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useForm } from 'react-hook-form';
-import type { CreateFeedbackRequest } from '@full-stack-starter/shared';
+import { useForm } from '@mantine/form';
+import {
+  Title,
+  TextInput,
+  Textarea,
+  Button,
+  Group,
+  Stack,
+  Alert,
+  Rating,
+  Text,
+} from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { useState } from 'react';
+import type { CreateFeedbackRequest } from '@full-stack-starter/shared';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
@@ -10,13 +22,31 @@ function NewFeedback() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateFeedbackRequest>();
+  const form = useForm<CreateFeedbackRequest>({
+    initialValues: {
+      name: '',
+      rating: 0,
+      comment: '',
+    },
+    validate: {
+      name: (value) => {
+        if (!value) return 'Name is required';
+        if (value.length < 2) return 'Name must be at least 2 characters';
+        return null;
+      },
+      rating: (value) => {
+        if (!value || value < 1) return 'Please select a rating';
+        return null;
+      },
+      comment: (value) => {
+        if (!value) return 'Comment is required';
+        if (value.length < 10) return 'Comment must be at least 10 characters';
+        return null;
+      },
+    },
+  });
 
-  const onSubmit = async (data: CreateFeedbackRequest) => {
+  const handleSubmit = async (values: CreateFeedbackRequest) => {
     try {
       setIsSubmitting(true);
       setError(null);
@@ -26,7 +56,7 @@ function NewFeedback() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(values),
       });
 
       if (!response.ok) {
@@ -42,180 +72,70 @@ function NewFeedback() {
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '600px' }}>
-      <h1>Add Patient Feedback</h1>
+    <Stack gap="xl" maw={600}>
+      <Title order={1}>Add Patient Feedback</Title>
 
       {error && (
-        <div
-          style={{
-            padding: '15px',
-            backgroundColor: '#ffebee',
-            color: '#c62828',
-            borderRadius: '4px',
-            marginBottom: '20px',
-          }}
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title="Error"
+          color="red"
+          variant="filled"
         >
-          Error: {error}
-        </div>
+          {error}
+        </Alert>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <label
-            htmlFor="name"
-            style={{
-              display: 'block',
-              marginBottom: '8px',
-              fontWeight: 'bold',
-            }}
-          >
-            Name *
-          </label>
-          <input
-            id="name"
-            type="text"
-            {...register('name', {
-              required: 'Name is required',
-              minLength: {
-                value: 2,
-                message: 'Name must be at least 2 characters',
-              },
-            })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              fontSize: '16px',
-              border: errors.name ? '2px solid #c62828' : '1px solid #ddd',
-              borderRadius: '4px',
-              boxSizing: 'border-box',
-            }}
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Stack gap="md">
+          <TextInput
+            label="Name"
+            placeholder="Enter patient name"
+            required
             disabled={isSubmitting}
+            {...form.getInputProps('name')}
           />
-          {errors.name && (
-            <span style={{ color: '#c62828', fontSize: '14px', marginTop: '4px', display: 'block' }}>
-              {errors.name.message}
-            </span>
-          )}
-        </div>
 
-        <div>
-          <label
-            htmlFor="rating"
-            style={{
-              display: 'block',
-              marginBottom: '8px',
-              fontWeight: 'bold',
-            }}
-          >
-            Rating *
-          </label>
-          <select
-            id="rating"
-            {...register('rating', {
-              required: 'Rating is required',
-              valueAsNumber: true,
-            })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              fontSize: '16px',
-              border: errors.rating ? '2px solid #c62828' : '1px solid #ddd',
-              borderRadius: '4px',
-              boxSizing: 'border-box',
-            }}
-            disabled={isSubmitting}
-          >
-            <option value="">Select a rating</option>
-            <option value="5">5 - Excellent</option>
-            <option value="4">4 - Very Good</option>
-            <option value="3">3 - Good</option>
-            <option value="2">2 - Fair</option>
-            <option value="1">1 - Poor</option>
-          </select>
-          {errors.rating && (
-            <span style={{ color: '#c62828', fontSize: '14px', marginTop: '4px', display: 'block' }}>
-              {errors.rating.message}
-            </span>
-          )}
-        </div>
+          <div>
+            <Text size="sm" fw={500} mb="xs">
+              Rating <span style={{ color: 'red' }}>*</span>
+            </Text>
+            <Rating
+              size="lg"
+              {...form.getInputProps('rating')}
+              onChange={(value) => form.setFieldValue('rating', value)}
+            />
+            {form.errors.rating && (
+              <Text c="red" size="sm" mt={5}>
+                {form.errors.rating}
+              </Text>
+            )}
+          </div>
 
-        <div>
-          <label
-            htmlFor="comment"
-            style={{
-              display: 'block',
-              marginBottom: '8px',
-              fontWeight: 'bold',
-            }}
-          >
-            Comment *
-          </label>
-          <textarea
-            id="comment"
-            {...register('comment', {
-              required: 'Comment is required',
-              minLength: {
-                value: 10,
-                message: 'Comment must be at least 10 characters',
-              },
-            })}
-            rows={5}
-            style={{
-              width: '100%',
-              padding: '10px',
-              fontSize: '16px',
-              border: errors.comment ? '2px solid #c62828' : '1px solid #ddd',
-              borderRadius: '4px',
-              fontFamily: 'Arial, sans-serif',
-              resize: 'vertical',
-              boxSizing: 'border-box',
-            }}
+          <Textarea
+            label="Comment"
+            placeholder="Share your experience..."
+            required
+            minRows={5}
             disabled={isSubmitting}
+            {...form.getInputProps('comment')}
           />
-          {errors.comment && (
-            <span style={{ color: '#c62828', fontSize: '14px', marginTop: '4px', display: 'block' }}>
-              {errors.comment.message}
-            </span>
-          )}
-        </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              padding: '12px 24px',
-              fontSize: '16px',
-              backgroundColor: isSubmitting ? '#ccc' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              fontWeight: 'bold',
-            }}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/' })}
-            disabled={isSubmitting}
-            style={{
-              padding: '12px 24px',
-              fontSize: '16px',
-              backgroundColor: 'white',
-              color: '#333',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            }}
-          >
-            Cancel
-          </button>
-        </div>
+          <Group mt="md">
+            <Button type="submit" loading={isSubmitting}>
+              Submit Feedback
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate({ to: '/' })}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+          </Group>
+        </Stack>
       </form>
-    </div>
+    </Stack>
   );
 }
 

@@ -1,51 +1,48 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { AppShell, Group, Anchor, Container } from '@mantine/core';
+import { IconStar, IconPlus } from '@tabler/icons-react';
 
 export const Route = createRootRoute({
   component: () => (
-    <div>
-      <nav style={{
-        padding: '20px',
-        borderBottom: '1px solid #ddd',
-        marginBottom: '20px',
-        display: 'flex',
-        gap: '20px'
-      }}>
-        <Link
-          to="/"
-          style={{
-            textDecoration: 'none',
-            color: '#007bff',
-            fontWeight: 'bold'
-          }}
-          activeProps={{
-            style: {
-              color: '#333',
-              textDecoration: 'underline'
-            }
-          }}
-        >
-          Feedback List
-        </Link>
-        <Link
-          to="/new"
-          style={{
-            textDecoration: 'none',
-            color: '#007bff',
-            fontWeight: 'bold'
-          }}
-          activeProps={{
-            style: {
-              color: '#333',
-              textDecoration: 'underline'
-            }
-          }}
-        >
-          Add Feedback
-        </Link>
-      </nav>
-      <Outlet />
+    <AppShell header={{ height: 60 }} padding="md">
+      <AppShell.Header>
+        <Group h="100%" px="md">
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            {({ isActive }) => (
+              <Anchor
+                component="span"
+                fw={700}
+                c={isActive ? 'blue' : 'dimmed'}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                <IconStar size={20} />
+                Feedback List
+              </Anchor>
+            )}
+          </Link>
+          <Link to="/new" style={{ textDecoration: 'none' }}>
+            {({ isActive }) => (
+              <Anchor
+                component="span"
+                fw={700}
+                c={isActive ? 'blue' : 'dimmed'}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                <IconPlus size={20} />
+                Add Feedback
+              </Anchor>
+            )}
+          </Link>
+        </Group>
+      </AppShell.Header>
+
+      <AppShell.Main>
+        <Container size="lg">
+          <Outlet />
+        </Container>
+      </AppShell.Main>
       <TanStackRouterDevtools />
-    </div>
+    </AppShell>
   ),
 });

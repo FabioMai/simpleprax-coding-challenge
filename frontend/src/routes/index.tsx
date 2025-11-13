@@ -1,5 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
+import {
+  Title,
+  Text,
+  Card,
+  Group,
+  Stack,
+  Rating,
+  Loader,
+  Center,
+  Alert,
+  Badge,
+} from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons-react';
 import type {
   FeedbackEntry,
   FeedbackListResponse,
@@ -36,69 +49,58 @@ function FeedbackList() {
 
   if (loading) {
     return (
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <p>Loading feedback...</p>
-      </div>
+      <Center h={400}>
+        <Loader size="lg" />
+      </Center>
     );
   }
 
   if (error) {
     return (
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <p style={{ color: 'red' }}>Error: {error}</p>
-      </div>
+      <Alert
+        icon={<IconAlertCircle size={16} />}
+        title="Error"
+        color="red"
+        variant="filled"
+      >
+        {error}
+      </Alert>
     );
   }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Patient Feedback</h1>
-      <p style={{ color: '#666', marginBottom: '30px' }}>
-        {feedback.length} review{feedback.length !== 1 ? 's' : ''}
-      </p>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {feedback.map((entry) => (
-          <div
-            key={entry.id}
-            style={{
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '20px',
-              backgroundColor: '#f9f9f9',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <h3 style={{ margin: 0 }}>{entry.name}</h3>
-              <div
-                style={{
-                  fontSize: '20px',
-                  color: '#ffa500',
-                  fontWeight: 'bold',
-                }}
-              >
-                {'★'.repeat(entry.rating)}
-                {'☆'.repeat(5 - entry.rating)}
-              </div>
-            </div>
-            <p style={{ margin: 0, lineHeight: '1.6', color: '#333' }}>
-              {entry.comment}
-            </p>
-          </div>
-        ))}
+    <Stack gap="xl">
+      <div>
+        <Title order={1}>Patient Feedback</Title>
+        <Group gap="xs" mt="xs">
+          <Badge size="lg" variant="light">
+            {feedback.length} review{feedback.length !== 1 ? 's' : ''}
+          </Badge>
+        </Group>
       </div>
 
-      {feedback.length === 0 && (
-        <p style={{ color: '#666' }}>No feedback entries yet.</p>
+      {feedback.length === 0 ? (
+        <Text c="dimmed" ta="center" mt="xl">
+          No feedback entries yet.
+        </Text>
+      ) : (
+        <Stack gap="md">
+          {feedback.map((entry) => (
+            <Card key={entry.id} shadow="sm" padding="lg" radius="md" withBorder>
+              <Group justify="space-between" mb="md">
+                <Text fw={700} size="lg">
+                  {entry.name}
+                </Text>
+                <Rating value={entry.rating} readOnly />
+              </Group>
+              <Text size="sm" c="dimmed">
+                {entry.comment}
+              </Text>
+            </Card>
+          ))}
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 }
 
