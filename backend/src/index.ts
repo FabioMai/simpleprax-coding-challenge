@@ -8,6 +8,7 @@ import type {
   FeedbackListResponse,
   CreateFeedbackRequest,
   FeedbackEntry,
+  FeedbackStatsResponse,
 } from "@full-stack-starter/shared";
 
 const PORT = Number(process.env.PORT) || 8080;
@@ -77,6 +78,33 @@ server.post<{ Body: CreateFeedbackRequest }>(
     return feedback;
   }
 );
+
+server.get("/api/feedback/stats", async (): Promise<FeedbackStatsResponse> => {
+  const totalFeedback = await prisma.feedbackEntry.count();
+
+  const avgResult = await prisma.feedbackEntry.aggregate({
+    _avg: {
+      rating: true,
+    },
+  });
+
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const feedbackThisWeek = await prisma.feedbackEntry.count({
+    where: {
+      createdAt: {
+        gte: oneWeekAgo,
+      },
+    },
+  });
+
+  return {
+    averageRating: avgResult._avg.rating ?? 0,
+    feedbackThisWeek,
+    totalFeedback,
+  };
+});
 
 await server.listen({ port: PORT, host: "0.0.0.0" });
 

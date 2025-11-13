@@ -17,6 +17,7 @@ import type {
   FeedbackEntry,
   FeedbackListResponse,
 } from '@full-stack-starter/shared';
+import { FeedbackStats } from '../components/FeedbackStats';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
@@ -78,6 +79,8 @@ function FeedbackList() {
           </Badge>
         </Group>
       </div>
+
+      <FeedbackStats />
 
       {feedback.length === 0 ? (
         <Text c="dimmed" ta="center" mt="xl">

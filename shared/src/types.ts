@@ -4,10 +4,17 @@ export interface FeedbackEntry {
   name: string;
   rating: number;
   comment: string;
+  createdAt?: string;
 }
 
 export interface FeedbackListResponse {
   data: FeedbackEntry[];
+}
+
+export interface FeedbackStatsResponse {
+  averageRating: number;
+  feedbackThisWeek: number;
+  totalFeedback: number;
 }
 
 // API Request Types
